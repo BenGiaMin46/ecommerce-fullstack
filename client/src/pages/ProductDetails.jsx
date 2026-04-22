@@ -1,4 +1,4 @@
-import { CircularProgress, Rating } from "@mui/material";
+import { CircularProgress, Rating, Avatar } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
@@ -14,7 +14,7 @@ import {
   deleteFromFavourite,
   getFavourite,
   getProductDetails,
-  getproducts,
+  getAllProducts,
   addReview,
 } from "../api";
 import StarIcon from '@mui/icons-material/Star';
@@ -364,7 +364,7 @@ const ProductDetails = () => {
       setProduct(res.data);
       
       // Fetch related products
-      const relatedRes = await getproducts({ categories: res.data?.category[0] });
+      const relatedRes = await getAllProducts(`categories=${res.data?.category[0]}`);
       setRelatedProducts(relatedRes.data.filter(p => p._id !== id).slice(0, 4));
     } catch (error) {
       setProduct(undefined);
