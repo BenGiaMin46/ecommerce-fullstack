@@ -20,6 +20,7 @@ import AdminLayout from "./components/AdminLayout";
 import AdminDashboard from "./pages/Admin/Dashboard";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import AdminUsers from "./pages/Admin/AdminUsers";
+import AdminProducts from "./pages/Admin/AdminProducts";
 import ToastMessage from "./components/ToastMessage";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -84,7 +85,7 @@ function AppContent() {
                   <Route path="dashboard" element={<AdminDashboard />} />
                   <Route path="orders" element={<AdminOrders />} />
                   <Route path="users" element={<AdminUsers />} />
-                  <Route path="products" element={<AdminDashboard />} /> 
+                  <Route path="products" element={<AdminProducts />} /> 
                 </Route>
               )}
             </Routes>

@@ -62,6 +62,21 @@ export const getAllProducts = async (filter = "") =>
 
 export const getProductDetails = async (id) => await API.get(`/products/${id}`);
 
+export const addProductAdmin = async (token, data) =>
+  await API.post(`/products/add`, [data], {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const updateProductAdmin = async (token, id, data) =>
+  await API.patch(`/products/${id}`, data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const deleteProductAdmin = async (token, id) =>
+  await API.delete(`/products/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
 //Cart
 
 export const getCart = async (token) =>

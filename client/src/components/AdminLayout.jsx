@@ -5,7 +5,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import PersonIcon from "@mui/icons-material/Person";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import RateReviewIcon from "@mui/icons-material/RateReview";
+import PackageIcon from "@mui/icons-material/Inventory";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useDispatch } from "react-redux";
@@ -128,7 +128,7 @@ const AdminLayout = () => {
             <span>Orders</span>
           </MenuItem>
           <MenuItem to="/admin/products">
-            <RateReviewIcon fontSize="small" />
+            <PackageIcon fontSize="small" />
             <span>Products</span>
           </MenuItem>
           <MenuItem to="/admin/users">
