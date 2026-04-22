@@ -342,7 +342,7 @@ const DropdownItem = styled.div`
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search..."
-              onKeyDown={(e) => e.key === 'Enter' && navigate(`/shop?q=${searchQuery}`)}
+              onKeyDown={(e) => e.key === 'Enter' && navigate(`/shop?search=${searchQuery}`)}
             />
           </SearchWrapper>
           {currentUser ? (
@@ -382,12 +382,17 @@ const DropdownItem = styled.div`
               placeholder="Search products..."
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && searchQuery) {
-                  navigate(`/shop?q=${searchQuery}`);
+                  navigate(`/shop?search=${searchQuery}`);
                   setSearchQuery('');
                 }
               }}
             />
-            <SearchIconWrapper onClick={() => searchQuery && navigate(`/shop?q=${searchQuery}`)}>
+            <SearchIconWrapper onClick={() => {
+              if (searchQuery) {
+                navigate(`/shop?search=${searchQuery}`);
+                setSearchQuery('');
+              }
+            }}>
               <SearchIcon sx={{ fontSize: 20 }} />
             </SearchIconWrapper>
           </SearchWrapper>

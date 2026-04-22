@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import ProductCard from "../components/cards/ProductCard";
 import styled from "styled-components";
 import { filter } from "../utils/data";
@@ -245,6 +246,11 @@ const MobileFilterToggle = styled.button`
 
 
 const ShopListing = () => {
+  const { search } = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(search);
+  const searchQuery = queryParams.get("search") || "";
+
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 1000]);
@@ -259,6 +265,7 @@ const ShopListing = () => {
     let query = `minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`;
     if (selectedSizes.length > 0) query += `&sizes=${selectedSizes.join(",")}`;
     if (selectedCategories.length > 0) query += `&categories=${selectedCategories.join(",")}`;
+    if (searchQuery) query += `&search=${searchQuery}`;
 
     try {
       const res = await getAllProducts(query);
@@ -269,7 +276,7 @@ const ShopListing = () => {
     } finally {
       setLoading(false);
     }
-  }, [priceRange, selectedSizes, selectedCategories]);
+  }, [priceRange, selectedSizes, selectedCategories, searchQuery]);
 
   useEffect(() => {
     getFilteredProductsData();
@@ -279,14 +286,16 @@ const ShopListing = () => {
     setPriceRange([0, 1000]);
     setSelectedSizes([]);
     setSelectedCategories([]);
+    if (searchQuery) navigate("/shop");
   };
 
-  const hasActiveFilters = priceRange[0] > 0 || priceRange[1] < 1000 || selectedSizes.length > 0 || selectedCategories.length > 0;
+  const hasActiveFilters = priceRange[0] > 0 || priceRange[1] < 1000 || selectedSizes.length > 0 || selectedCategories.length > 0 || searchQuery;
 
   const allActiveFilters = [
     ...selectedSizes.map(s => ({ type: 'size', value: s })),
     ...selectedCategories.map(c => ({ type: 'category', value: c })),
-    ...(priceRange[0] > 0 || priceRange[1] < 1000 ? [{ type: 'price', value: `$${priceRange[0]} - $${priceRange[1]}` }] : [])
+    ...(priceRange[0] > 0 || priceRange[1] < 1000 ? [{ type: 'price', value: `$${priceRange[0]} - $${priceRange[1]}` }] : []),
+    ...(searchQuery ? [{ type: 'search', value: `Search: "${searchQuery}"` }] : [])
   ];
 
   if (loading) {
