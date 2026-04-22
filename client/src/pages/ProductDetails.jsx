@@ -25,11 +25,11 @@ import ProductCard from "../components/cards/ProductCard";
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   min-height: calc(100vh - 100px);
-  padding: 40px 24px;
+  padding: 40px 0;
   background: ${({ theme }) => theme.white};
 `;
 const Wrapper = styled.div`
@@ -245,6 +245,7 @@ const ReviewSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 40px;
+  padding: 0 24px;
 `;
 
 const SectionHeader = styled.div`
@@ -262,13 +263,9 @@ const SectionTitle = styled.h2`
 `;
 
 const ReviewContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 60px;
-  
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 `;
 
 const ReviewList = styled.div`
@@ -318,12 +315,11 @@ const ReviewForm = styled.div`
   flex-direction: column;
   gap: 20px;
   padding: 30px;
-  background: ${({ theme }) => theme.white};
+  background: ${({ theme }) => theme.card};
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 20px;
   height: fit-content;
-  position: sticky;
-  top: 100px;
+  margin-top: 20px;
 `;
 
 const RelatedSection = styled.div`
@@ -333,6 +329,7 @@ const RelatedSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 32px;
+  padding: 0 24px;
 `;
 
 const ProductGrid = styled.div`
