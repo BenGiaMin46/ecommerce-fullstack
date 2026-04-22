@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { getPromotions } from "../api";
+import { CircularProgress } from "@mui/material";
 
 const Container = styled.div`
   min-height: calc(100vh - 70px);
@@ -126,135 +128,47 @@ const PromoDate = styled.span`
   color: ${({ theme }) => theme.text_tertiary};
 `;
 
-const promotions = [
-  {
-    id: "all",
-    name: "All",
-    items: [
-      {
-        badge: "New",
-        title: "20% Off Your First Order",
-        desc: "Applicable for all products, no minimum order value.",
-        code: "DARK5NEW",
-        date: "Expiry: 12/31/2026"
-      },
-      {
-        badge: "Hot",
-        title: "Weekend Flash Sale",
-        desc: "Up to 50% off selected products every weekend.",
-        code: "FLASH50",
-        date: "Every Sat - Sun"
-      },
-      {
-        badge: "Free Ship",
-        title: "Nationwide Free Shipping",
-        desc: "Free shipping for orders over 500,000 VND.",
-        code: "FREESHIP",
-        date: "No expiry"
-      },
-      {
-        badge: "Buy 2 Get 1",
-        title: "Buy 2 Get 1 T-shirt",
-        desc: "Buy any 2 t-shirts and get 1 of the same type free.",
-        code: "BUY2GET1",
-        date: "Expiry: 06/30/2026"
-      },
-      {
-        badge: "Member",
-        title: "VIP Member Exclusive",
-        desc: "15% off for VIP members and 10% for regular members.",
-        code: "VIP15",
-        date: "Year-round"
-      },
-      {
-        badge: "Gift",
-        title: "Free Tote for 1M Order",
-        desc: "Free stylish canvas bag for orders over 1,000,000 VND.",
-        code: "TOTE1000",
-        date: "Limited quantity"
-      }
-    ]
-  },
-  {
-    id: "new",
-    name: "New Promotions",
-    items: [
-      {
-        badge: "New",
-        title: "20% Off Your First Order",
-        desc: "Applicable for all products, no minimum order value.",
-        code: "DARK5NEW",
-        date: "Expiry: 12/31/2026"
-      },
-      {
-        badge: "Gift",
-        title: "Free Tote for 1M Order",
-        desc: "Free stylish canvas bag for orders over 1,000,000 VND.",
-        code: "TOTE1000",
-        date: "Limited quantity"
-      }
-    ]
-  },
-  {
-    id: "sale",
-    name: "Sale",
-    items: [
-      {
-        badge: "Hot",
-        title: "Weekend Flash Sale",
-        desc: "Up to 50% off selected products every weekend.",
-        code: "FLASH50",
-        date: "Every Sat - Sun"
-      },
-      {
-        badge: "Buy 2 Get 1",
-        title: "Buy 2 Get 1 T-shirt",
-        desc: "Buy any 2 t-shirts and get 1 of the same type free.",
-        code: "BUY2GET1",
-        date: "Expiry: 06/30/2026"
-      }
-    ]
-  },
-  {
-    id: "shipping",
-    name: "Shipping",
-    items: [
-      {
-        badge: "Free Ship",
-        title: "Nationwide Free Shipping",
-        desc: "Free shipping for orders over 500,000 VND.",
-        code: "FREESHIP",
-        date: "No expiry"
-      }
-    ]
-  }
-];
+
 
 const Promotion = () => {
   const [activeTab, setActiveTab] = useState("all");
-  const navigate = useNavigate();
-  
-  const activePromo = promotions.find(p => p.id === activeTab);
+  const [loading, setLoading] = useState(true);
+  const [promotionsData, setPromotionsData] = useState([]);
+
+  useEffect(() => {
+    const fetchPromos = async () => {
+      try {
+        setLoading(true);
+        const res = await getPromotions();
+        setPromotionsData(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPromos();
+  }, []);
+
+  const filteredPromos = activeTab === "all" 
+    ? promotionsData 
+    : promotionsData.filter(p => p.category === activeTab);
+
+  if (loading) return <div style={{ textAlign: 'center', padding: '100px' }}><CircularProgress /></div>;
 
   return (
     <Container>
       <Title>Promotions</Title>
       
       <PromoNav>
-        {promotions.map(promo => (
-          <NavTab 
-            key={promo.id}
-            active={activeTab === promo.id}
-            onClick={() => setActiveTab(promo.id)}
-          >
-            {promo.name}
-          </NavTab>
-        ))}
+        <NavTab active={activeTab === "all"} onClick={() => setActiveTab("all")}>All</NavTab>
+        <NavTab active={activeTab === "new"} onClick={() => setActiveTab("new")}>New Promotions</NavTab>
+        <NavTab active={activeTab === "sale"} onClick={() => setActiveTab("sale")}>Sale</NavTab>
       </PromoNav>
-      
+
       <PromoGrid>
-        {activePromo?.items.map((item, index) => (
-          <PromoCard key={index} onClick={() => navigate('/shop')}>
+        {filteredPromos.map((item) => (
+          <PromoCard key={item._id}>
             <PromoBadge>{item.badge}</PromoBadge>
             <PromoTitle>{item.title}</PromoTitle>
             <PromoDesc>{item.desc}</PromoDesc>
@@ -263,6 +177,7 @@ const Promotion = () => {
           </PromoCard>
         ))}
       </PromoGrid>
+      {filteredPromos.length === 0 && <div style={{ textAlign: 'center', padding: '40px', color: 'gray' }}>No promotions found.</div>}
     </Container>
   );
 };

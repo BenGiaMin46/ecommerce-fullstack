@@ -77,6 +77,35 @@ export const deleteProductAdmin = async (token, id) =>
     headers: { Authorization: `Bearer ${token}` },
   });
 
+// Promotions & News
+export const getPromotions = async () => await API.get("/promo-news/promotions");
+export const addPromotion = async (token, data) =>
+  await API.post("/promo-news/promotions", data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+export const updatePromotion = async (token, id, data) =>
+  await API.patch(`/promo-news/promotions/${id}`, data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+export const deletePromotion = async (token, id) =>
+  await API.delete(`/promo-news/promotions/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const getNews = async () => await API.get("/promo-news/news");
+export const addNews = async (token, data) =>
+  await API.post("/promo-news/news", data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+export const updateNews = async (token, id, data) =>
+  await API.patch(`/promo-news/news/${id}`, data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+export const deleteNews = async (token, id) =>
+  await API.delete(`/promo-news/news/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
 //Cart
 
 export const getCart = async (token) =>

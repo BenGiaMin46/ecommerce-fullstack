@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { getNews } from "../api";
+import { CircularProgress } from "@mui/material";
 
 const Container = styled.div`
   min-height: calc(100vh - 70px);
@@ -116,137 +118,49 @@ const NewsMeta = styled.div`
   color: ${({ theme }) => theme.text_tertiary};
 `;
 
-const newsCategories = [
-  {
-    id: "all",
-    name: "All",
-    items: [
-      {
-        category: "Collection",
-        title: "Summer 2024 Collection is Here",
-        excerpt: "Discover the latest designs for this summer with a youthful and dynamic style.",
-        date: "04/22/2026",
-        readTime: "3 min read",
-        image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600"
-      },
-      {
-        category: "Event",
-        title: "Grand Opening of New Store in Hanoi",
-        excerpt: "Krist officially opens its flagship store in Hanoi with many attractive offers.",
-        date: "04/15/2026",
-        readTime: "2 min read",
-        image: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=600"
-      },
-      {
-        category: "Fashion",
-        title: "5 Fashion Trends for Summer 2024",
-        excerpt: "A roundup of the hottest fashion trends this summer that you shouldn't miss.",
-        date: "04/10/2026",
-        readTime: "5 min read",
-        image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600"
-      },
-      {
-        category: "Promotion",
-        title: "Weekend Flash Sale: Up to 50% Off",
-        excerpt: "Weekend flash sale program with discounts up to 50% on selected products.",
-        date: "04/05/2026",
-        readTime: "2 min read",
-        image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600"
-      },
-      {
-        category: "Member",
-        title: "New VIP Member Program",
-        excerpt: "Launching the VIP member program with many exclusive privileges and offers.",
-        date: "04/01/2026",
-        readTime: "4 min read",
-        image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=600"
-      },
-      {
-        category: "Sustainability",
-        title: "Commitment to Sustainable Fashion",
-        excerpt: "Krist is committed to using eco-friendly materials in production.",
-        date: "03/28/2026",
-        readTime: "3 min read",
-        image: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=600"
-      }
-    ]
-  },
-  {
-    id: "collection",
-    name: "Collections",
-    items: [
-      {
-        category: "Collection",
-        title: "Summer 2024 Collection is Here",
-        excerpt: "Discover the latest designs for this summer with a youthful and dynamic style.",
-        date: "04/22/2026",
-        readTime: "3 min read",
-        image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600"
-      }
-    ]
-  },
-  {
-    id: "event",
-    name: "Events",
-    items: [
-      {
-        category: "Event",
-        title: "Grand Opening of New Store in Hanoi",
-        excerpt: "Krist officially opens its flagship store in Hanoi with many attractive offers.",
-        date: "04/15/2026",
-        readTime: "2 min read",
-        image: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=600"
-      },
-      {
-        category: "Promotion",
-        title: "Weekend Flash Sale: Up to 50% Off",
-        excerpt: "Weekend flash sale program with discounts up to 50% on selected products.",
-        date: "04/05/2026",
-        readTime: "2 min read",
-        image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600"
-      }
-    ]
-  },
-  {
-    id: "fashion",
-    name: "Fashion",
-    items: [
-      {
-        category: "Fashion",
-        title: "5 Fashion Trends for Summer 2024",
-        excerpt: "A roundup of the hottest fashion trends this summer that you shouldn't miss.",
-        date: "04/10/2026",
-        readTime: "5 min read",
-        image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600"
-      }
-    ]
-  }
-];
-
 const News = () => {
   const [activeTab, setActiveTab] = useState("all");
-  
-  const activeCategory = newsCategories.find(c => c.id === activeTab);
+  const [loading, setLoading] = useState(true);
+  const [newsData, setNewsData] = useState([]);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true);
+        const res = await getNews();
+        setNewsData(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNews();
+  }, []);
+
+  const categories = ["all", ...new Set(newsData.map(item => item.category.toLowerCase()))];
+
+  const filteredNews = activeTab === "all" 
+    ? newsData 
+    : newsData.filter(item => item.category.toLowerCase() === activeTab);
+
+  if (loading) return <div style={{ textAlign: 'center', padding: '100px' }}><CircularProgress /></div>;
 
   return (
     <Container>
-      <Title>News</Title>
+      <Title>News & Articles</Title>
       
       <NewsNav>
-        {newsCategories.map(cat => (
-          <NavTab 
-            key={cat.id}
-            active={activeTab === cat.id}
-            onClick={() => setActiveTab(cat.id)}
-          >
-            {cat.name}
+        {categories.map(cat => (
+          <NavTab key={cat} active={activeTab === cat} onClick={() => setActiveTab(cat)}>
+            {cat}
           </NavTab>
         ))}
       </NewsNav>
-      
+
       <NewsGrid>
-        {activeCategory?.items.map((item, index) => (
-          <NewsCard key={index}>
+        {filteredNews.map((item) => (
+          <NewsCard key={item._id}>
             <NewsImage bg={item.image} />
             <NewsContent>
               <NewsCategory>{item.category}</NewsCategory>
@@ -260,6 +174,7 @@ const News = () => {
           </NewsCard>
         ))}
       </NewsGrid>
+      {filteredNews.length === 0 && <div style={{ textAlign: 'center', padding: '40px', color: 'gray' }}>No articles found.</div>}
     </Container>
   );
 };

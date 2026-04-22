@@ -6,6 +6,8 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import PersonIcon from "@mui/icons-material/Person";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import PackageIcon from "@mui/icons-material/Inventory";
+import CampaignIcon from "@mui/icons-material/Campaign";
+import NewspaperIcon from "@mui/icons-material/Newspaper";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useDispatch } from "react-redux";
@@ -130,6 +132,14 @@ const AdminLayout = () => {
           <MenuItem to="/admin/products">
             <PackageIcon fontSize="small" />
             <span>Products</span>
+          </MenuItem>
+          <MenuItem to="/admin/promotions">
+            <CampaignIcon fontSize="small" />
+            <span>Promotions</span>
+          </MenuItem>
+          <MenuItem to="/admin/news">
+            <NewspaperIcon fontSize="small" />
+            <span>News</span>
           </MenuItem>
           <MenuItem to="/admin/users">
             <PersonIcon fontSize="small" />
